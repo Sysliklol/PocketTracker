@@ -9,74 +9,68 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+<script src="<c:url value="/resources/SignInAng.js"/>"></script>
+<link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/login.css" />">
+<link rel="stylesheet" href="<c:url value="/resources/FA/css/font-awesome.min.css" />">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 <head>
     <title>Login Page</title>
-    <style>
-        .error {
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            color: #a94442;
-            background-color: #f2dede;
-            border-color: #ebccd1;
-        }
 
-        .msg {
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            color: #31708f;
-            background-color: #d9edf7;
-            border-color: #bce8f1;
-        }
-
-        #login-box {
-            width: 300px;
-            padding: 20px;
-            margin: 100px auto;
-            background: #fff;
-            -webkit-border-radius: 2px;
-            -moz-border-radius: 2px;
-            border: 1px solid #000;
-        }
-    </style>
 </head>
-<body onload='document.loginForm.username.focus();'>
+<body onload='document.loginForm.username.focus();' ng-app="SignInApp">
 
-<h1>Spring Security Custom Login Form (XML)</h1>
 
-<div id="login-box">
 
-    <h2>Login with Username and Password</h2>
 
-    <c:if test="${not empty error}">
+    <!--<c:if test="${not empty error}">
         <div class="error">${error}</div>
     </c:if>
     <c:if test="${not empty msg}">
         <div class="msg">${msg}</div>
-    </c:if>
+    </c:if>-->
 
     <form name='loginForm'
           action="<c:url value='j_spring_security_check' />" method='POST'>
+        <div class="container autism">
 
-        <table>
-            <tr>
-                <td>User:</td>
-                <td><input type='text' name='email' value=''></td>
-            </tr>
-            <tr>
-                <td>Password:</td>
-                <td><input type='password' name='password' /></td>
-            </tr>
-            <tr>
-                <td colspan='2'><input name="submit" type="submit"
-                                       value="submit" /></td>
-            </tr>
-        </table>
+            <div class="col-md-6" style="display:inline-block" ng-controller="signIn">
+                <div class="col-md-12 "><h1>Login</h1> </div>
+                <div class="col-md-12 text_above_login">Lost account or  <a href="#!signUp">Register</a></div>
+                <div class="col-md-12 " >
+                    <div class="mdl-textfield mdl-js-textfield input-form-login" >
+                        <input class="mdl-textfield__input " type="text" id="login-field" ng-model="name" name='email' >
+                        <i class="fa fa-address-card login-4eliks" aria-hidden="true"></i>
+                        <label class="mdl-textfield__label" for="login-field">Email </label>
+                    </div>
+                    <div class="mdl-textfield mdl-js-textfield input-form-login" >
+                        <i class="fa fa-lock login-4eliks" aria-hidden="true"></i>
+                        <input class="mdl-textfield__input" type="password" id="password-field" ng-model="pass" name='password'>
+                        <label class="mdl-textfield__label" for="password-field">Password</label>
+                    </div>
+                </div>
+                <div class="col-md-12 login-options">
+                    <div class="col-md-12 remember-me-checkbox">
+                        <span><input type="checkbox" id="CheckBoxRemember" name="CheckBoxRemember" ><label >Remember me</label></span>
+                    </div>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored login-button" id="login-button" ng-click="signin()" name="submit" type="submit"
+                            value="submit" >
+                        Login
+                    </button>
+                </div>
+                <div class="col-md-12 other-logins" >
+                </div>
+            </div>
+
+            <div class="col-md-6 right-column-login"  > <div class="greeter"><h3>HELLO</h3>Welcome</div></div>
+        </div>
+
     </form>
-</div>
 
 </body>
 </html>

@@ -1,0 +1,81 @@
+<div class="menu-button" onclick="show('col-menu')"><i class="material-icons">list</i></div>
+<div class="row">
+    <div id="col-menu" class="col-menu no-padding" ng-controller="userPurchase">
+        <div class="menu">
+            <div class="header">
+                Привіт,  {{username}} !
+            </div>
+            <div class="items" >
+                <ul class="nav">
+                    <li>
+                        <a href="#!">
+                            <i class="material-icons">dashboard</i>
+                            <p>Головна</p>
+                        </a>
+                    </li>
+                    <li  class="active">
+                        <a href="#!operations">
+                            <i class="material-icons">book</i>
+                            <p>Операції</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a ng-click="map()">
+                            <i class="material-icons">person</i>
+                            <p>Профіль</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                            <i class="material-icons">lock</i>
+                            <p>Вихід</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-content no-padding" ng-controller="allPurchase">
+        <div class="content" >
+            <div class="header">
+                Pocket tracker
+            </div>
+            <div class="input-group pdg">
+                <span class="input-group-addon">
+                    <i class="material-icons">account_balance</i>
+                </span>
+                <select ng-model="sort_by"  class="form-control" >
+                    <option value="Дата">Дата</option>
+                    <option value="Ціна">Ціна</option>
+                    <option value="Тип">Тип</option>
+                </select>
+                <button class="btn btn-primary mrg" style="border-bottom-left-radius: 0;border-top-left-radius: 0;" ng-click="sortBy()">
+                    Сортувати
+                </button>
+            </div>
+
+            <div class="container">
+                <div calss="row">
+                <div class="col-md-3 item-purchase" ng-repeat="x in purchases"  style="display: inline-block" >
+
+                    <h1 class="item-header">{{x.title}}</h1>
+                    <div>
+                        <div class="image-container">
+                            <img src="{{x.img}}" class="soat" />
+                        </div>
+                        <span style="font-weight:700;">Тип :{{x.type}}</span>
+                        <span style="float:right;font-weight:700;">Дата :{{x.date}}</span>
+                    </div>
+
+                    <div class="button-container">
+                        <button class="btn btn-primary mrg"  ng-click="getPurchasesUser(x._id)" style = "width:100%;">
+                            More
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
