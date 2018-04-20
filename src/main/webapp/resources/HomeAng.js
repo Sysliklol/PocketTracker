@@ -15,7 +15,7 @@ HomeApp.config(($routeProvider) => {
             templateUrl : "resources/Home/SingleOperationInfo.htm"
         })
 });
-
+var options;
 
 function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
@@ -37,15 +37,17 @@ HomeApp.controller('map',($scope,$http)=>{
         })
     }
 })
-HomeApp.controller('addPurchase',($scope, $http, $location) => {
+HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
 
     angular.element(document).ready(function () {
         $http.get('/places/all').then(response=>{
             console.log(response);
+            options=response.data;
+            $rootScope.options=response.data;
             $scope.options=response.data;
         })
     });
- $scope.message = "added ur purchase! :)";
+    $scope.message = "added ur purchase! :)";
     $scope.addpurchase = function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
@@ -166,15 +168,24 @@ HomeApp.controller('singlePurchase',($scope, $http) =>{
 
 })
 
-HomeApp.controller('addIncome',($scope,$http) =>{
+HomeApp.controller('addIncome',($scope,$http,$rootScope) =>{
     $scope.message = "added ur income! :)";
+
+    angular.element(document).ready(function () {
+          setTimeout(()=>{
+              $scope.options=options;
+          },10000)
+
+    });
     $scope.addincome = function () {
-        /*$http.post("/api/addIncome", {
+        $http.post("/transactions/create", {
             "title": $scope.title_income,
-            "description": $scope.description_income,
-            "type": $scope.type_income,
-            "ammount": $scope.ammount_income,
+            "quantity": 1,
+            "image": $scope.type_income,
+            "cost": parseInt($scope.ammount_income),
+            "placeId": $scope.place_income.id
         }).then(function(response) {
+            console.log(response);
             if(response.data == "failure"){
                 $scope.message = "error on ading! :(";
             }
@@ -183,8 +194,10 @@ HomeApp.controller('addIncome',($scope,$http) =>{
             }
             getPurchase($http);
 
-        });*/
-
+        });
+       $scope.update= function(){
+           $scope.options=options;
+        }
     }
 
 })

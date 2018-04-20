@@ -128,7 +128,7 @@
                             </div>
                             <div class="input-group pdg">
                                 <span class="input-group-addon">
-                                    <i class="material-icons">account_balance</i>
+                                    <i class="material-icons">format_list_numbered</i>
                                 </span>
                                 <select name="" id=""  class="form-control" ng-model="type_purchase">
                                     <option value="Other" selected disabled>Тип</option>
@@ -199,10 +199,18 @@
                                 </span>
                                 <select name="" id=""  class="form-control" ng-model="type_income">
                                     <option value="" selected disabled>Тип</option>
-                                    <option value="Зарплата">Зарплата</option>
-                                    <option value="Знайшов">Знайшов на вулиці</option>
-                                    <option value="Позика">Позика</option>
-                                    <option value="Кекос">Кекос</option>
+                                    <option value="Salary">Зарплата</option>
+                                    <option value="Lottery">Знайшов на вулиці</option>
+                                    <option value="Present">Позика</option>
+                                    <option value="Other">Кекос</option>
+                                </select>
+
+                            </div>
+                            <div class="input-group pdg">
+                                <span class="input-group-addon">
+                                    <i class="material-icons">account_balance</i>
+                                </span>
+                                <select name="" id=""  class="form-control"  data-ng-options="o.title for o in options" ng-model="place_income">
                                 </select>
                             </div>
                             <div class="input-group pdg">
@@ -217,5 +225,5 @@
         </div>
     </div>
 </div>
-<div>
+
 
