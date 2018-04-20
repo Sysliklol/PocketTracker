@@ -116,7 +116,7 @@
                                         <span class="input-group-addon">
                                             <i class="material-icons">label</i>
                                         </span>
-                                        <input type="text" class="form-control" placeholder="Опис" ng-model="description_purchase">
+                                        <input type="text" class="form-control" placeholder="Кількість" ng-model="description_purchase">
                                     </div>
                                 </div>
                             </div>
@@ -135,6 +135,13 @@
                                     <option value="Food">Їжа</option>
                                     <option value="Clothes">Одяг</option>
                                     <option value="Electronics">Розваги</option>
+                                </select>
+                            </div>
+                            <div class="input-group pdg">
+                                <span class="input-group-addon">
+                                    <i class="material-icons">account_balance</i>
+                                </span>
+                                <select name="" id=""  class="form-control"  data-ng-options="o.title for o in options" ng-model="place_purchase">
                                 </select>
                             </div>
                             <div class="input-group pdg" >

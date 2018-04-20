@@ -48,10 +48,11 @@
     <div class="close" id="close_place" ng-click="hide_map()">X</div>
     <h1>Add place</h1>
 
-    <input type="text" class="form-control col-md-12" placeholder="Place name" ng-model="place_name">
-
+    <input type="text" class="form-control col-md-5" placeholder="Place name" ng-model="place_name">
+    <input type="text" class="form-control col-md-3"  id="lat" ng-model="lat" disabled >
+    <input type="text" class="form-control col-md-3" id="lng" ng-model="lng" disabled >
     <div class="col-md-12" id="googleMap" style="width:100%;height:400px;"></div>
-        <button type="button"  class="btn btn-primary mrg"  data-toggle="modal" data-target="#myModal"  ng-click="addpurchase()">
+        <button type="button"  class="btn btn-primary mrg"  data-toggle="modal" data-target="#myModal"  ng-click="addplace()">
             Add
         </button>
     </div>
@@ -60,9 +61,9 @@
 </body>
 <script>
     function myMap() {
-        var marker
+        var marker;
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition,error, options);
+            navigator.geolocation.getCurrentPosition(showPosition);
         }
         function showPosition(position) {
             var myLatLng = {lat: position.coords.latitude, lng: position.coords.longitude};
@@ -82,8 +83,16 @@
             }
 
             function placeMarkerAndPanTo(latLng, map) {
-                 this.marker.position = latLng;
+                if (marker && marker.setMap) {
+                    marker.setMap(null);
+                }
+                marker = new google.maps.Marker({
+                    position: latLng,
+                    map: map
+                });
                  map.panTo(latLng);
+                $('#lat').val(latLng.lat().toFixed(4));
+                $('#lng').val(latLng.lng().toFixed(4));
 
              }
     }

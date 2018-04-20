@@ -7,6 +7,6 @@ import javax.validation.constraints.Pattern;
 
 public class PlacePOJO {
     @NotNull(message = "Should not be null") public String title;
-    @NotNull(message = "Should not be null") public long latitude;
-    @NotNull(message = "Should not be null") public long longitude;
+    @NotNull(message = "Should not be null") public double latitude;
+    @NotNull(message = "Should not be null") public double longitude;
 }

@@ -15,11 +15,7 @@ HomeApp.config(($routeProvider) => {
             templateUrl : "resources/Home/SingleOperationInfo.htm"
         })
 });
-var options = {
-    enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 600000
-};
+
 
 function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
@@ -29,12 +25,30 @@ HomeApp.controller('map',($scope,$http)=>{
     $scope.hide_map = function(){
         $('#popup_place').hide();
     }
+
+
+    $scope.addplace = function () {
+        $http.post('/places/create',{
+            "title": $scope.place_name,
+            "latitude": parseFloat($('#lat').val()),
+            "longitude": parseFloat($('#lng').val())
+        }).then(response=>{
+            console.log(response);
+        })
+    }
 })
 HomeApp.controller('addPurchase',($scope, $http, $location) => {
+
+    angular.element(document).ready(function () {
+        $http.get('/places/all').then(response=>{
+            console.log(response);
+            $scope.options=response.data;
+        })
+    });
  $scope.message = "added ur purchase! :)";
     $scope.addpurchase = function () {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition,error, options);
+            navigator.geolocation.getCurrentPosition(showPosition);
         }
     }
     $scope.getCharts = function (){
@@ -49,20 +63,13 @@ HomeApp.controller('addPurchase',($scope, $http, $location) => {
         $scope.latitude = position.coords.latitude;
         $scope.longtitude = position.coords.longitude;
         console.log( $scope.longtitude)
-       /* $http.post("/places/create", {
-            "title": "Novus2",
-            "latitude": 123123,
-            "longitude": 123123
-        }).then(response=>{
-            console.log(response);
-        });*/
        console.log(-parseInt($scope.ammount_purchase));
         $http.post("/transactions/create", {
             "title": $scope.title_purchase,
             "cost": -parseInt($scope.ammount_purchase),
             "quantity": parseInt($scope.description_purchase),
             "image": "Food",
-            "placeId": "52eb571e-26fd-4e80-a81e-d8e8d55cf093"
+            "placeId": $scope.place_purchase.id
 
         }).then((response)=>{
             console.log(response);
