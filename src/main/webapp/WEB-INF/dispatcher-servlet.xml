@@ -17,9 +17,9 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 
 
     <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/pocketracker" />
-        <property name="username" value="root" />
+        <property name="driverClassName" value="org.postgresql.Driver" />
+        <property name="url" value="jdbc:postgresql://localhost:5432/pocketracker" />
+        <property name="username" value="postgres" />
         <property name="password" value="" />
         <property name="initialSize" value="5" />
         <property name="maxTotal" value="10" />
