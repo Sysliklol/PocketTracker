@@ -52,6 +52,7 @@ HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
         }
+
     }
     $scope.getCharts = function (){
         if(purchases) {
@@ -70,7 +71,7 @@ HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
             "title": $scope.title_purchase,
             "cost": -parseInt($scope.ammount_purchase),
             "quantity": parseInt($scope.description_purchase),
-            "image": "Food",
+            "image": $scope.type_purchase,
             "placeId": $scope.place_purchase.id
 
         }).then((response)=>{
@@ -140,28 +141,34 @@ HomeApp.controller('allPurchase', ($scope, $location, $http) => {
 
 });
 
-HomeApp.controller('singlePurchase',($scope, $http) =>{
+HomeApp.controller('singlePurchase',($scope, $http,$rootScope) =>{
 
-    $scope.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg";
+    $scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg";
 
     $scope.getSinglePurchase = function(){
         $scope.purchase = currPurchase;
-        let map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: $scope.purchase.latitude, lng: $scope.purchase.longtitude},
-            zoom: 15
-        });
-        var marker = new google.maps.Marker({
-            position: {lat: $scope.purchase.latitude, lng: $scope.purchase.longtitude},
-            map: map,
-            title: 'purchase'
-        });
-        console.log($scope.purchase.latitude+ " " +$scope.purchase.longtitude)
+        var myLatLng;
+        $rootScope.options.forEach(elem=>{
+            if(elem.id==$scope.purchase.placeId){
+                 myLatLng = {lat: elem.latitude, lng: elem.longitude};
+                let map = new google.maps.Map(document.getElementById('map'), {
+                    center: myLatLng,
+                    zoom: 15
+                });
+                var marker = new google.maps.Marker({
+                    position: myLatLng,
+                    map: map,
+                    title: 'purchase'
+                });
+            }
+        })
+
         console.log($scope.purchase)
-        switch($scope.purchase.type)    {
-            case("Їжа"):{$scope.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
-            case("Одяг"):{$scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
-            case("Розваги"):{$scope.img="https://www.partners-in-harvest.org/wp-content/uploads/2017/12/p1500669900108.jpg";break;}
-            default:{$scope.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
+        switch($scope.purchase.image)    {
+            case("Food"):{$scope.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
+            case("Clothes"):{$scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
+            case("Electronics"):{$scope.img="https://www.partners-in-harvest.org/wp-content/uploads/2017/12/p1500669900108.jpg";break;}
+            default:{$scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
         }
 
     }
@@ -207,12 +214,13 @@ function getPurchase($http){
         console.log(response)
         purchases = response.data;
         purchases.forEach(function(x){
-            if(x.date)x.date = x.date.substring(0,10)
+            x.date = new Date(x.createdAt).toLocaleDateString("fr-CA");
+            console.log(x.date);
 
-            switch(x.type){
-                case("Їжа"):{x.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
-                case("Одяг"):{x.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
-                case("Розваги"):{x.img="https://www.partners-in-harvest.org/wp-content/uploads/2017/12/p1500669900108.jpg";break;}
+            switch(x.image){
+                case("Food"):{x.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
+                case("Clothes"):{x.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
+                case("Electronics"):{x.img="https://www.partners-in-harvest.org/wp-content/uploads/2017/12/p1500669900108.jpg";break;}
                 default:{x.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
             }
         });
@@ -228,15 +236,16 @@ function getDates(){
         if(x.date){
 
         switch(x.date){
-            case(new Date(new Date().setDate(new Date().getDate())).toLocaleDateString("fr-CA")):{data[6]+=parseInt(x.ammount);  break;}
-            case(new Date(new Date().setDate(new Date().getDate()-1)).toLocaleDateString("fr-CA")):{data[5]+=parseInt(x.ammount); break;}
-            case(new Date(new Date().setDate(new Date().getDate()-2)).toLocaleDateString("fr-CA")):{data[4]+=parseInt(x.ammount); break;}
-            case(new Date(new Date().setDate(new Date().getDate()-3)).toLocaleDateString("fr-CA")):{data[3]+=parseInt(x.ammount); break;}
-            case(new Date(new Date().setDate(new Date().getDate()-4)).toLocaleDateString("fr-CA")):{data[2]+=parseInt(x.ammount); break;}
-            case(new Date(new Date().setDate(new Date().getDate()-5)).toLocaleDateString("fr-CA")):{data[1]+=parseInt(x.ammount); break;}
-            case(new Date(new Date().setDate(new Date().getDate()-6)).toLocaleDateString("fr-CA")):{data[0]+=parseInt(x.ammount); break;}
+            case(new Date(new Date().setDate(new Date().getDate())).toLocaleDateString("fr-CA")):{data[6]+=parseInt(x.cost);  break;}
+            case(new Date(new Date().setDate(new Date().getDate()-1)).toLocaleDateString("fr-CA")):{data[5]+=parseInt(x.cost); break;}
+            case(new Date(new Date().setDate(new Date().getDate()-2)).toLocaleDateString("fr-CA")):{data[4]+=parseInt(x.cost); break;}
+            case(new Date(new Date().setDate(new Date().getDate()-3)).toLocaleDateString("fr-CA")):{data[3]+=parseInt(x.cost); break;}
+            case(new Date(new Date().setDate(new Date().getDate()-4)).toLocaleDateString("fr-CA")):{data[2]+=parseInt(x.cost); break;}
+            case(new Date(new Date().setDate(new Date().getDate()-5)).toLocaleDateString("fr-CA")):{data[1]+=parseInt(x.cost); break;}
+            case(new Date(new Date().setDate(new Date().getDate()-6)).toLocaleDateString("fr-CA")):{data[0]+=parseInt(x.cost); break;}
         }}
     });
+
    createGraph(data,"myChart","Money spent");
 }
 
@@ -272,13 +281,13 @@ function createGraph(data,elementName,title){
                 }]
             },
 
-            options: {scales: {
+            /*options: {scales: {
                     yAxes: [
                         {
-                            ticks: {beginAtZero:true,max:10000}
+                            ticks: {beginAtZero:true,max:data.max()*1.3}
                         }
                     ]
-                }}
+                }}*/
         });
     }
     catch(err){

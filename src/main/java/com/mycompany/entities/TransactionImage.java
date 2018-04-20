@@ -4,7 +4,10 @@ public enum TransactionImage {
 	Other,
 	Food,
 	Clothes,
-	Electonics
+	Elecrtonics,
+	Salary,
+	Lottery,
+	Present
 	/**
 	 * TO DO: add more
 	 */
