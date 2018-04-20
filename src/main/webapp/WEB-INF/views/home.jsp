@@ -10,6 +10,6 @@
 <html>
     <body>
         <h2>Hello World!</h2>
-        ${user}
+        ${user.getName()}
     </body>
 </html>
