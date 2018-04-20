@@ -21,8 +21,8 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <property name="url" value="jdbc:postgresql://ec2-79-125-117-53.eu-west-1.compute.amazonaws.com:5432/d3g96ufvaa3kie" />
         <property name="username" value="mrbawkrswbpzcn" />
         <property name="password" value="e8cefd9608f528cfd4cda929845667a89b3d87409e5b4d62b5834fdc34955e49" />
-        <property name="initialSize" value="5" />
-        <property name="maxTotal" value="10" />
+        <property name="initialSize" value="1" />
+        <property name="maxTotal" value="2" />
         <property name="connectionProperties" value="ssl=true;sslfactory=org.postgresql.ssl.NonValidatingFactory;"/>
     </bean>
 
