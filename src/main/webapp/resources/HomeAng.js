@@ -127,9 +127,7 @@ HomeApp.controller('allPurchase', ($scope, $location, $http) => {
     $scope.getPurchasesUser = function(id){
         $location.path( "/singlePurchase" );
         purchases.forEach(item => {
-
-            if(item._id == id) currPurchase = item;
-
+            if(item.id == id) currPurchase = item;
         })
 
 
@@ -147,7 +145,7 @@ HomeApp.controller('singlePurchase',($scope, $http,$rootScope) =>{
 
     $scope.getSinglePurchase = function(){
         $scope.purchase = currPurchase;
-        var myLatLng;
+        let myLatLng;
         $rootScope.options.forEach(elem=>{
             if(elem.id==$scope.purchase.placeId){
                  myLatLng = {lat: elem.latitude, lng: elem.longitude};
@@ -155,15 +153,15 @@ HomeApp.controller('singlePurchase',($scope, $http,$rootScope) =>{
                     center: myLatLng,
                     zoom: 15
                 });
-                var marker = new google.maps.Marker({
+                let marker = new google.maps.Marker({
                     position: myLatLng,
                     map: map,
                     title: 'purchase'
                 });
             }
-        })
+        });
 
-        console.log($scope.purchase)
+        console.log($scope.purchase);
         switch($scope.purchase.image)    {
             case("Food"):{$scope.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
             case("Clothes"):{$scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
@@ -173,7 +171,7 @@ HomeApp.controller('singlePurchase',($scope, $http,$rootScope) =>{
 
     }
 
-})
+});
 
 HomeApp.controller('addIncome',($scope,$http,$rootScope) =>{
     $scope.message = "added ur income! :)";
@@ -207,11 +205,11 @@ HomeApp.controller('addIncome',($scope,$http,$rootScope) =>{
         }
     }
 
-})
+});
 
 function getPurchase($http){
     $http.get("/transactions/all", {}).then(function (response) {
-        console.log(response)
+        console.log(response);
         purchases = response.data;
         purchases.forEach(function(x){
             x.date = new Date(x.createdAt).toLocaleDateString("fr-CA");
@@ -298,7 +296,7 @@ function createGraph(data,elementName,title){
 
 
 function show(name) {
-    var x = document.getElementById("col-menu");
+    let x = document.getElementById("col-menu");
     if (x.style.display === "none") {
         x.style.display = "block";
     } else {
