@@ -4,7 +4,7 @@ public enum TransactionImage {
 	Other,
 	Food,
 	Clothes,
-	Elecrtonics,
+	Electronics,
 	Salary,
 	Lottery,
 	Present

@@ -33,7 +33,6 @@ HomeApp.controller('map',($scope,$http)=>{
             "latitude": parseFloat($('#lat').val()),
             "longitude": parseFloat($('#lng').val())
         }).then(response=>{
-            console.log(response);
         })
     }
 })
@@ -41,7 +40,6 @@ HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
 
     angular.element(document).ready(function () {
         $http.get('/places/all').then(response=>{
-            console.log(response);
             options=response.data;
             $rootScope.options=response.data;
             $scope.options=response.data;
@@ -61,12 +59,8 @@ HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
         }
     }
     function showPosition(position) {
-        let url = $location.absUrl() + "/transactions/create"
-        console.log(url)
         $scope.latitude = position.coords.latitude;
         $scope.longtitude = position.coords.longitude;
-        console.log( $scope.longtitude)
-       console.log(-parseInt($scope.ammount_purchase));
         $http.post("/transactions/create", {
             "title": $scope.title_purchase,
             "cost": -parseInt($scope.ammount_purchase),
@@ -74,15 +68,17 @@ HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
             "image": $scope.type_purchase,
             "placeId": $scope.place_purchase.id
 
-        }).then((response)=>{
-            console.log(response);
-            if(response.data == "failure"){
-                $scope.message = "error on ading! :(";
-            }
-            else {
-                $scope.message = "added ur purchase! :)";
-            }
+        }).then((response,err)=>{
+            if(!err){
+            swal({
+                position: 'top-end',
+                type: 'success',
+                title: 'Added',
+                showConfirmButton: false,
+                timer: 2000
+            })
             getPurchase($http);
+            }
         });
     }
 });
@@ -102,24 +98,39 @@ HomeApp.controller('userPurchase', ($scope, $http,$rootScope)=> {
 HomeApp.controller('allPurchase', ($scope, $location, $http) => {
     if(purchases!=null){
     purchases.sort(function (a,b) {
-        return new Date(b.date) - new Date(a.date);
+        return b.createdAt - a.createdAt;
     })}
     $scope.purchases = purchases;
     $scope.sortBy = function(){
 
-           if($scope.sort_by=="Ціна"){
+
+        $scope.purchases = purchases;
+           if($scope.sort_by=="Price"){
                $scope.purchases.sort(function (a, b) {
-                    return (b.ammount) - (a.ammount);
+                    return b.cost - a.cost;
                 });
             }
-            else if($scope.sort_by=="Тип"){
+            else if($scope.sort_by=="Type"){
                $scope.purchases.sort(function (a, b) {
                     return (b.type) - (a.type);
                });
             }
+           else if($scope.sort_by=="Income"){
+               $scope.purchases =[];
+               purchases.forEach(elem=>{
+
+                   if(elem.cost>0) $scope.purchases.push(elem);
+               })
+           }
+           else if($scope.sort_by=="Spending"){
+               $scope.purchases =[];
+               purchases.forEach(elem=>{
+                   if(elem.cost<0) $scope.purchases.push(elem);
+               })
+           }
             else{
                $scope.purchases.sort(function (a, b) {
-                    return new Date(b.date) - new Date(a.date);
+                    return b.createdAt - a.createdAt;
                 });
             }
     }
@@ -145,6 +156,14 @@ HomeApp.controller('singlePurchase',($scope, $http,$rootScope) =>{
 
     $scope.getSinglePurchase = function(){
         $scope.purchase = currPurchase;
+        if($scope.purchase.cost>0){
+            $scope.right_word="Income"
+
+        }
+        else{
+            $scope.right_word="Spending"
+            $scope.purchase.cost =  $scope.purchase.cost*=(-1);
+        }
         let myLatLng;
         $rootScope.options.forEach(elem=>{
             if(elem.id==$scope.purchase.placeId){
@@ -161,7 +180,7 @@ HomeApp.controller('singlePurchase',($scope, $http,$rootScope) =>{
             }
         });
 
-        console.log($scope.purchase);
+
         switch($scope.purchase.image)    {
             case("Food"):{$scope.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
             case("Clothes"):{$scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
@@ -189,16 +208,18 @@ HomeApp.controller('addIncome',($scope,$http,$rootScope) =>{
             "image": $scope.type_income,
             "cost": parseInt($scope.ammount_income),
             "placeId": $scope.place_income.id
-        }).then(function(response) {
-            console.log(response);
-            if(response.data == "failure"){
-                $scope.message = "error on ading! :(";
-            }
-            else {
-                $scope.message = "added ur income! :)";
-            }
-            getPurchase($http);
+        }).then(function(response,err) {
 
+            if (!err) {
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Added',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+                getPurchase($http);
+            }
         });
        $scope.update= function(){
            $scope.options=options;
@@ -209,11 +230,11 @@ HomeApp.controller('addIncome',($scope,$http,$rootScope) =>{
 
 function getPurchase($http){
     $http.get("/transactions/all", {}).then(function (response) {
-        console.log(response);
+
         purchases = response.data;
         purchases.forEach(function(x){
             x.date = new Date(x.createdAt).toLocaleDateString("fr-CA");
-            console.log(x.date);
+
 
             switch(x.image){
                 case("Food"):{x.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
