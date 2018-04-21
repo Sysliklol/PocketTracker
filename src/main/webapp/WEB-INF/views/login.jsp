@@ -64,7 +64,7 @@
                     <br>
                     <br>
 
-                    Lost account or  <a href="#!signUp">Register</a>
+                    Login or  <a href="register">Register</a>
                 </div>
                 <div class="col-md-12 " >
                     <div class="mdl-textfield mdl-js-textfield input-form-login" >

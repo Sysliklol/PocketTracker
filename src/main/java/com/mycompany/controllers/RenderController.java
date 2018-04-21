@@ -36,4 +36,10 @@ public class RenderController {
         model.addAttribute("user", ((RequestUser) authentication.getPrincipal()).getUser());
         return "home";
     }
+
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
+    protected String register(Model model){
+
+        return "register";
+    }
 }

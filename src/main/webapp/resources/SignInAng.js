@@ -29,12 +29,13 @@ signInApp.controller('signIn', function($scope, $http) {
 
 signInApp.controller('signUp', function($scope, $http) {
     $scope.signup = function () {
-        $http.post("/signup", {
-            name: $scope.name,
+        $http.post("/user/signup", {
+            firstName: $scope.fName,
+            lastName: $scope.sName,
             email:  $scope.email,
             password: $scope.pass
         }).then(function(response) {
-            console.log(response.data);
+            console.log(response.message);
         });
     }
 });
