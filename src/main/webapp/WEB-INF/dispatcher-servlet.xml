@@ -92,7 +92,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <property name="host" value="smtp.gmail.com" />
         <property name="port" value="587" />
         <property name="username" value="Vkharko1@gmail.com" />
-        <property name="password" value="theron55" />
+        <property name="password" value="Gavnetso1" />
 
         <property name="javaMailProperties">
             <props>

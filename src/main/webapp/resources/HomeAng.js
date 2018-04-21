@@ -20,30 +20,137 @@ var options;
 function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
 };
-HomeApp.controller('map',($scope,$http)=>{
+HomeApp.controller('map',($scope,$rootScope,$http)=> {
 
-    $scope.hide_map = function(){
+    $scope.hide_map = function () {
         $('#popup_place').hide();
     }
+    angular.element(document).ready(function () {
+        setTimeout(() => {
+            $scope.options = $rootScope.options;
+
+        }, 10000)
+
+/**/})
 
 
-    $scope.addplace = function () {
-        $http.post('/places/create',{
-            "title": $scope.place_name,
-            "latitude": parseFloat($('#lat').val()),
-            "longitude": parseFloat($('#lng').val())
-        }).then(response=>{
-        })
-    }
-})
+        var map
+        var marker;
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        }
+
+        function showPosition(position) {
+            var myLatLng = {lat: position.coords.latitude, lng: position.coords.longitude};
+            var mapProp = {
+                center: myLatLng,
+                zoom: 10,
+            };
+            $scope.map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+            $scope.marker = new google.maps.Marker({
+                position: myLatLng,
+                map:  $scope.map
+            });
+
+            $scope.map.addListener('click', function (e) {
+                placeMarkerAndPanTo(e.latLng, map);
+            });
+        }
+
+        function placeMarkerAndPanTo(latLng, map) {
+            if ( $scope.marker &&  $scope.marker.setMap) {
+                $scope.marker.setMap(null);
+            }
+            $scope.marker = new google.maps.Marker({
+                position: latLng,
+                map: $scope.map
+            });
+            $scope.map.panTo(latLng);
+            $('#lat').val(latLng.lat().toFixed(4));
+            $('#lng').val(latLng.lng().toFixed(4));
+
+        }
+
+
+/**/
+
+
+
+
+
+        $scope.addplace = function () {
+            $http.post('/places/create', {
+                "title": $scope.place_name,
+                "latitude": parseFloat($('#lat').val()),
+                "longitude": parseFloat($('#lng').val())
+            }).then(response => {
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'added',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            })
+        }
+
+        $scope.update = function(){
+            let lat = $scope.place_delete.latitude
+            let lng =   $scope.place_delete.longitude
+            let latLng = {lat: lat,lng: lng}
+            $scope.map.panTo(latLng);
+            console.log($scope.place_delete);
+            if ( $scope.marker &&  $scope.marker.setMap) {
+                $scope.marker.setMap(null);
+            }
+            $scope.marker = new google.maps.Marker({
+                position: latLng,
+                map:  $scope.map
+            });
+        }
+
+        $scope.delete_place=  function(){
+            $http.post('/places/delete',{
+                "id":  $scope.place_delete.id
+            }).then((response,err)=>{
+                if(!err){
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Deleted',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }
+                else {
+
+                    swal({
+                        position: 'top-end',
+                        type: 'error',
+                        title: 'error',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }
+            })
+        }
+    })
+
 HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
 
     angular.element(document).ready(function () {
-        $http.get('/places/all').then(response=>{
-            options=response.data;
-            $rootScope.options=response.data;
-            $scope.options=response.data;
-        })
+        console.log($rootScope.options)
+        if(!$rootScope.options){
+            $http.get('/places/all').then(response=>{
+                options=response.data;
+                $rootScope.options=response.data;
+                $scope.options=response.data;
+            })
+        }
+        else {
+            options=$rootScope.options;
+            $scope.options=$rootScope.options;
+        }
     });
     $scope.message = "added ur purchase! :)";
     $scope.addpurchase = function () {
@@ -100,10 +207,8 @@ HomeApp.controller('allPurchase', ($scope, $location, $http) => {
     purchases.sort(function (a,b) {
         return b.createdAt - a.createdAt;
     })}
-    $scope.purchases = purchases;
+        $scope.purchases = purchases;
     $scope.sortBy = function(){
-
-
         $scope.purchases = purchases;
            if($scope.sort_by=="Price"){
                $scope.purchases.sort(function (a, b) {
@@ -150,7 +255,24 @@ HomeApp.controller('allPurchase', ($scope, $location, $http) => {
 
 });
 
-HomeApp.controller('singlePurchase',($scope, $http,$rootScope) =>{
+HomeApp.controller('singlePurchase',($scope, $http,$rootScope,$location) =>{
+
+    $scope.curMap = function(){
+        $rootScope.options.forEach(elem=>{
+            if(elem.id==$scope.purchase.placeId){
+                myLatLng = {lat: elem.latitude, lng: elem.longitude};
+                let map = new google.maps.Map(document.getElementById('map'), {
+                    center: myLatLng,
+                    zoom: 15
+                });
+                let marker = new google.maps.Marker({
+                    position: myLatLng,
+                    map: map,
+                    title: 'purchase'
+                });
+            }
+        });
+    }
 
     $scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg";
 
@@ -165,20 +287,19 @@ HomeApp.controller('singlePurchase',($scope, $http,$rootScope) =>{
             $scope.purchase.cost =  $scope.purchase.cost*=(-1);
         }
         let myLatLng;
-        $rootScope.options.forEach(elem=>{
-            if(elem.id==$scope.purchase.placeId){
-                 myLatLng = {lat: elem.latitude, lng: elem.longitude};
-                let map = new google.maps.Map(document.getElementById('map'), {
-                    center: myLatLng,
-                    zoom: 15
-                });
-                let marker = new google.maps.Marker({
-                    position: myLatLng,
-                    map: map,
-                    title: 'purchase'
-                });
-            }
-        });
+
+        if($rootScope.options){
+            $scope.curMap();
+        }
+        else {
+            $http.get('/places/all').then(response=>{
+                options=response.data;
+                $rootScope.options=response.data;
+                $scope.options=response.data;
+                $scope.curMap();
+            })
+        }
+
 
 
         switch($scope.purchase.image)    {
@@ -188,6 +309,17 @@ HomeApp.controller('singlePurchase',($scope, $http,$rootScope) =>{
             default:{$scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
         }
 
+    }
+
+        $scope.delete= function(){
+        $http.post('/transactions/delete',{
+            "id": $scope.purchase.id
+        }).then((response,err)=>{
+            if(!err) {
+                getPurchase($http);
+                $location.path( "/operations" );
+            }
+            })
     }
 
 });
@@ -324,3 +456,4 @@ function show(name) {
         x.style.display = "none";
     }
 }
+

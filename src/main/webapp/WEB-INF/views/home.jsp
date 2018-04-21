@@ -30,7 +30,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
 <title>Pocket tracker</title>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASUPM6DDH2ce4YFPy_v95lCrlcybs71hs&callback=myMap"
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASUPM6DDH2ce4YFPy_v95lCrlcybs71hs"
         type="text/javascript"></script>
 <head>
 
@@ -46,12 +46,27 @@
     <div class="close" id="close_place" ng-click="hide_map()">X</div>
     <h1>Add place</h1>
 
-    <input type="text" class="form-control col-md-5" placeholder="Place name" ng-model="place_name">
-    <input type="text" class="form-control col-md-3"  id="lat" ng-model="lat" disabled >
-    <input type="text" class="form-control col-md-3" id="lng" ng-model="lng" disabled >
+        <div class="input-group pdg">
+            <span class="input-group-addon">
+                <i class="material-icons">add_location</i>
+            </span>
+            <input type="text" class="form-control" placeholder="Add place name" ng-model="place_name">
+            <span class="input-group-addon">
+                <i class="material-icons">delete_forever</i>
+            </span>
+            <select type="text" class="form-control" data-ng-options="o.title for o in options"  placeholder="Delete Place" ng-model="place_delete" ng-change="update()">
+            </select>
+        </div>
+    <input type="text" class="form-control col-md-3"  id="lat" ng-model="lat" style="display:none" disabled >
+    <input type="text" class="form-control col-md-3" id="lng" ng-model="lng" style="display:none" disabled >
     <div class="col-md-12" id="googleMap" style="width:100%;height:400px;"></div>
+
+
         <button type="button"  class="btn btn-primary mrg"  data-toggle="modal" data-target="#myModal"  ng-click="addplace()">
             Add
+        </button>
+        <button type="button"  class="btn btn-primary mrg"  data-toggle="modal" data-target="#myModal"  ng-click="delete_place()">
+            Delete
         </button>
     </div>
 </div>
@@ -59,40 +74,7 @@
 </body>
 <script>
     function myMap() {
-        var marker;
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        }
-        function showPosition(position) {
-            var myLatLng = {lat: position.coords.latitude, lng: position.coords.longitude};
-            var mapProp = {
-                center: myLatLng,
-                zoom: 10,
-            };
-            var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
-             marker = new google.maps.Marker({
-                position: myLatLng,
-                map: map
-            });
 
-            map.addListener('click', function(e) {
-                placeMarkerAndPanTo(e.latLng, map);
-            });
-            }
-
-            function placeMarkerAndPanTo(latLng, map) {
-                if (marker && marker.setMap) {
-                    marker.setMap(null);
-                }
-                marker = new google.maps.Marker({
-                    position: latLng,
-                    map: map
-                });
-                 map.panTo(latLng);
-                $('#lat').val(latLng.lat().toFixed(4));
-                $('#lng').val(latLng.lng().toFixed(4));
-
-             }
     }
 </script>
 </html>
