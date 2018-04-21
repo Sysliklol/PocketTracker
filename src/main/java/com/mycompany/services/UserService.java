@@ -9,6 +9,7 @@ import com.mycompany.pojos.AuthPOJO;
 import com.mycompany.pojos.UserPOJO;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +29,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    @Qualifier("mailService")
+    MailService mailService;
 
     public User authenticateUser(AuthPOJO payload){
         User user = this.userDao.findByEmail(payload.email);
@@ -43,6 +47,22 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    public void verifyById(String userId){
+        User user = this.userDao.findById(userId);
+
+        if(user == null){
+            throw new Error("No user with such id");
+        }
+
+        if(user.isEnabled()){
+            throw new Error("User is enabled");
+        }
+
+        user.setEnabled(true);
+
+        this.userDao.update(user);
+    }
+
 
     public User createUser(UserPOJO payload){
         User user = this.userDao.findByEmail(payload.email);
@@ -52,12 +72,23 @@ public class UserService implements UserDetailsService {
         }
 
         User toCreate = new User(payload.email);
-
+        toCreate.setEnabled(false);
         toCreate.setFirstName(payload.firstName);
         toCreate.setLastName(payload.lastName);
         toCreate.setPasswordHash(this.encryptPassword(payload.password));
 
-        return this.userDao.saveUser(toCreate);
+        this.userDao.saveUser(toCreate);
+
+        mailService.sendMail(
+                "Vkharko1@gmail.com",
+                payload.email,
+                "Pocket Tracker Verification",
+                "Welcome to Pocket Tracker ! </br>"+
+                 "Please follow this link for verification ! <br>"+
+                 " <a href=\"https://pocketracker.herokuapp.com/user/verify/"+ toCreate.getId() +"\"> Verify </a> "
+        );
+
+        return toCreate;
     }
 
     @Transactional
@@ -104,7 +135,7 @@ public class UserService implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
 
-        return new RequestUser(user,true, true, true, true,authorities);
+        return new RequestUser(user,user.isEnabled(), true, true, true,authorities);
     }
 
 

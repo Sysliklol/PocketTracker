@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -39,6 +40,25 @@ public class UserController {
         }
 
         return new Gson().toJson(authentication.getName());
+    }
+
+
+    @RequestMapping(value={"/verify/{userId}"}, method = RequestMethod.GET)
+    protected String verifyUser(@PathVariable String userId, Model model){
+        if(userId == null || userId.length() == 0) {
+            return "redirect:../../error";
+        }
+
+        try {
+            userService.verifyById(userId);
+
+            model.addAttribute("msg", "You account was successfully verified");
+            return "login";
+
+        } catch (Error error){
+            return "redirect:../../error";
+        }
+
     }
 
 

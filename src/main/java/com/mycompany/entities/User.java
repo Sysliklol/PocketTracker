@@ -33,6 +33,7 @@ public class User {
 
 	@NotNull private UserRole role;
 
+	private boolean enabled;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<Transaction> transactions;
@@ -113,5 +114,13 @@ public class User {
 
 	public void setPlaces(List<Place> places) {
 		this.places = places;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 }

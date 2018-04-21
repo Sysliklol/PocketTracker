@@ -88,6 +88,24 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 
     <bean id="myUserService" class="com.mycompany.services.UserService" />
 
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.gmail.com" />
+        <property name="port" value="587" />
+        <property name="username" value="Vkharko1@gmail.com" />
+        <property name="password" value="theron55" />
+
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="mailService" class="com.mycompany.services.MailService">
+        <property name="mailSender" ref="mailSender" />
+    </bean>
 
 </beans>
 

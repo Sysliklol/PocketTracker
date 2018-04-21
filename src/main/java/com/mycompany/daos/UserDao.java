@@ -22,6 +22,10 @@ public class UserDao{
         this.em.refresh(user);
     }
 
+    public User update(User user){
+        return this.em.merge(user);
+    }
+
     public User saveUser(User user){
         this.em.persist(user);
         return user;

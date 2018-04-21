@@ -21,6 +21,19 @@
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 <head>
     <title>Login Page</title>
+    <style>
+        .msg {
+            color: darkseagreen;
+            font-weight: 600;
+            font-size: 17px;
+        }
+
+        .error{
+            color: darkred;
+            font-weight: 600;
+            font-size: 17px;
+        }
+    </style>
 
 </head>
 <body onload='document.loginForm.username.focus();' ng-app="SignInApp">
@@ -41,7 +54,18 @@
 
             <div class="col-md-6" style="display:inline-block" ng-controller="signIn">
                 <div class="col-md-12 "><h1>Login</h1> </div>
-                <div class="col-md-12 text_above_login">Lost account or  <a href="#!signUp">Register</a></div>
+                <div class="col-md-12 text_above_login">
+                    <c:if test="${not empty error}">
+                        <div class="error">${error}</div>
+                    </c:if>
+                    <c:if test="${not empty msg}">
+                        <div class="msg">${msg}</div>
+                    </c:if>
+                    <br>
+                    <br>
+
+                    Lost account or  <a href="#!signUp">Register</a>
+                </div>
                 <div class="col-md-12 " >
                     <div class="mdl-textfield mdl-js-textfield input-form-login" >
                         <input class="mdl-textfield__input " type="text" id="login-field" ng-model="name" name='email' >

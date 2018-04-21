@@ -20,7 +20,7 @@ public class RenderController {
     protected String login(@RequestParam(value = "error", required = false) String error, @RequestParam(value = "logout", required = false) String logout, Model model){
 
         if (error != null) {
-            model.addAttribute("error", "Invalid username and password!");
+            model.addAttribute("error", "Invalid email or password!");
         }
 
         if (logout != null) {
