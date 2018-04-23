@@ -149,17 +149,44 @@ HomeApp.controller('stats',($scope,$rootScope,$http)=>{
             $scope.types= {};
             $scope.types_chart = [];
 
-            $scope.types_sum={};
-            $scope.types_chart_sum=[];
+            $scope.types_sum = {};
+            $scope.types_chart_sum = [];
 
-            $scope.years={};
+            $scope.years = {};
             $scope.years_chart=[];
 
+            $scope.place = {};
+            $scope.places_chart =[];
+
+            $scope.place_sum = {};
+            $scope.place_sum_chart = [];
 
             $scope.date = new Date().toLocaleDateString("fr-CA").substring(0,4);
             $scope.purchases.forEach(elem => {
 
+
                 let transaction_date = new Date(elem.createdAt).toLocaleDateString("fr-CA").substring(0,4);
+
+                $rootScope.options.find(item=>{
+                    if(item.id==elem.placeId){
+
+                        if(!$scope.place[item.title]) {
+                            $scope.place[item.title]=1;
+
+                            if(elem.cost>0) $scope.place_sum[item.title]=parseInt(elem.cost)
+                            else $scope.place_sum[item.title]=parseInt(elem.cost)*(-1)
+
+                        }
+
+                        else {
+                            $scope.place[item.title]++
+                            if(elem.cost>0) $scope.place_sum[item.title]+=parseInt(elem.cost)
+                            else $scope.place_sum[item.title]+=parseInt(elem.cost)*(-1)
+                        }
+
+
+                    }
+                })
 
                 if(!$scope.types[elem.image]){
 
@@ -192,6 +219,26 @@ HomeApp.controller('stats',($scope,$rootScope,$http)=>{
                 }
 
             });
+
+            $.each($scope.place_sum,(key,value)=>{
+                let color = getRandomColor();
+                $('#places_sum_stats').append('<div class="col-md-4"><span style="background:'+color+';width:20px;margin-top:5px;height:16px;display:inline-block;padding-top:3px"></span> '+key+' </div>');
+                $scope.place_sum_chart.push({
+                    title: key,
+                    value: value,
+                    color: color
+                })
+            })
+
+            $.each($scope.place,(key,value)=>{
+                let color = getRandomColor();
+                $('#places_stats').append('<div class="col-md-4"><span style="background:'+color+';width:20px;margin-top:5px;height:16px;display:inline-block;padding-top:3px"></span> '+key+' </div>');
+                $scope.places_chart.push({
+                    title: key,
+                    value: value,
+                    color: color
+                })
+            })
 
             $.each( $scope.types_sum, (key, value ) => {
                 let color = getRandomColor();
@@ -232,6 +279,8 @@ HomeApp.controller('stats',($scope,$rootScope,$http)=>{
                 $("#pieChartType").drawPieChart($scope.types_chart);
                 $("#pieChartTypeSum").drawPieChart($scope.types_chart_sum);
                 $("#pieChartDate").drawPieChart($scope.years_chart);
+                $("#pieChartPlaces").drawPieChart($scope.places_chart);
+                $("#pieChartPlaceSum").drawPieChart($scope.place_sum_chart);
          });
     })
 
