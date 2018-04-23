@@ -63,12 +63,10 @@
     <input type="text" class="form-control col-md-3"  id="lat" ng-model="lat" style="display:none" disabled >
     <input type="text" class="form-control col-md-3" id="lng" ng-model="lng" style="display:none" disabled >
     <div class="col-md-12" id="googleMap" style="width:100%;height:400px;"></div>
-
-
-        <button type="button"  class="btn btn-primary mrg"  data-toggle="modal" data-target="#myModal"  ng-click="addplace()">
+        <button type="button"  class="btn btn-primary mrg"    ng-click="addplace()">
             Add
         </button>
-        <button type="button"  class="btn btn-primary mrg"  data-toggle="modal" data-target="#myModal"  ng-click="delete_place()">
+        <button type="button"  class="btn btn-primary mrg"    ng-click="delete_place()">
             Delete
         </button>
     </div>

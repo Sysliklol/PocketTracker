@@ -236,6 +236,7 @@ HomeApp.controller('stats',($scope,$rootScope,$http)=>{
     })
 
 });
+
 HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
 
     angular.element(document).ready(function () {
@@ -298,6 +299,7 @@ HomeApp.controller('userPurchase', ($scope, $http,$rootScope)=> {
     }
     $scope.map = function(){
         $('#popup_place').show();
+
     }
 
 });
