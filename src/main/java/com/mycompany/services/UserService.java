@@ -83,9 +83,9 @@ public class UserService implements UserDetailsService {
                 "Vkharko1@gmail.com",
                 payload.email,
                 "Pocket Tracker Verification",
-                "Welcome to Pocket Tracker ! </br>"+
-                 "Please follow this link for verification ! <br>"+
-                 " <a href=\"https://pocketracker.herokuapp.com/user/verify/"+ toCreate.getId() +"\"> Verify </a> "
+                "Welcome to Pocket Tracker ! "+
+                 "Please follow this link for verification !"+
+                 "https://pocketracker.herokuapp.com/user/verify/"+ toCreate.getId()
         );
 
         return toCreate;
