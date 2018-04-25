@@ -304,20 +304,6 @@ HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
     });
     $scope.message = "added ur purchase! :)";
     $scope.addpurchase = function () {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        }
-
-    };
-    $scope.getCharts = function (){
-        if(purchases) {
-            getDates();
-            getCountPurch();
-        }
-    };
-    function showPosition(position) {
-        $scope.latitude = position.coords.latitude;
-        $scope.longtitude = position.coords.longitude;
         $http.post("/transactions/create", {
             "title": $scope.title_purchase,
             "cost": -parseInt($scope.ammount_purchase),
@@ -327,17 +313,28 @@ HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
 
         }).then((response,err)=>{
             if(!err){
-            swal({
-                position: 'top-end',
-                type: 'success',
-                title: 'Added',
-                showConfirmButton: false,
-                timer: 2000
-            });
-            getPurchase($http);
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Added',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+                getPurchase($http);
             }
         });
-    }
+
+    };
+    $scope.getCharts = function (){
+        if(purchases) {
+            getDates();
+            getCountPurch();
+        }
+    };
+
+
+
+
 });
 
 HomeApp.controller('userPurchase', ($scope, $http,$rootScope)=> {
