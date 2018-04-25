@@ -1,7 +1,7 @@
  <div class="menu-button" onclick="show('col-menu')"><i class="material-icons">list</i></div>
 
 <div class="row">
-    <div id="col-menu" class="col-menu no-padding" ng-controller="userPurchase">
+    <div id="col-menu" style="display:none;" class="col-menu no-padding" ng-controller="userPurchase">
         <div class="menu">
             <div class="header">
                 Привіт, {{username}} !
@@ -47,7 +47,7 @@
                         <canvas class="chart green" id="myChart"></canvas>
                         <div class="sub">
                             <div class="head">
-                                Витрачено грошей
+                                Щоденний баланс
                             </div>
                             <div class="description">
                                 <i class="material-icons">access_time</i>
@@ -72,14 +72,14 @@
                 </div>
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="chart orange" id="chrtor"></div>
+                        <canvas class="chart orange" id="chrtor"></canvas>
                         <div class="sub">
                             <div class="head">
-                                Отримано прибутку
+                                Стан рахунку за останній тиждень
                             </div>
                             <div class="description">
-                                <i class="material-icons">date_range</i>
-                                оновленно цього року
+                                <i class="material-icons">access_time</i>
+                                оновленно сьогодні
                             </div>
                         </div>
                     </div>

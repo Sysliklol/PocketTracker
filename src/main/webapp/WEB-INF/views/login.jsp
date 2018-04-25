@@ -20,7 +20,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 <head>
-    <title>Login Page</title>
+    <title>Pocket tracker</title>
     <style>
         .msg {
             color: darkseagreen;

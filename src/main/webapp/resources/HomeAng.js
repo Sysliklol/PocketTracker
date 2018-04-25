@@ -163,6 +163,7 @@ HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
         if(purchases) {
             getDates();
             getCountPurch();
+            getOverallBalance();
         }
     }
     function showPosition(position) {
@@ -377,6 +378,7 @@ function getPurchase($http){
         });
         getDates();
         getCountPurch();
+        getOverallBalance();
     });
 }
 
@@ -397,7 +399,7 @@ function getDates(){
         }}
     });
 
-   createGraph(data,"myChart","Money spent");
+   createGraph(data,"myChart","Everyday balance");
 }
 
 function getCountPurch(){
@@ -415,6 +417,33 @@ function getCountPurch(){
             }}
     });
     createGraph(data,"myChartCount","Purchases Count");
+}
+
+function getOverallBalance(){
+    let data  = [0,0,0,0,0,0,0];
+    let oldBalance = 0;
+    purchases.forEach(function(x){
+        if(x.date){
+            switch(x.date) {
+                case(new Date(new Date().setDate(new Date().getDate())).toLocaleDateString("fr-CA")):{data[6]+=parseInt(x.cost);  break;}
+                case(new Date(new Date().setDate(new Date().getDate()-1)).toLocaleDateString("fr-CA")):{data[5]+=parseInt(x.cost); break;}
+                case(new Date(new Date().setDate(new Date().getDate()-2)).toLocaleDateString("fr-CA")):{data[4]+=parseInt(x.cost); break;}
+                case(new Date(new Date().setDate(new Date().getDate()-3)).toLocaleDateString("fr-CA")):{data[3]+=parseInt(x.cost); break;}
+                case(new Date(new Date().setDate(new Date().getDate()-4)).toLocaleDateString("fr-CA")):{data[2]+=parseInt(x.cost); break;}
+                case(new Date(new Date().setDate(new Date().getDate()-5)).toLocaleDateString("fr-CA")):{data[1]+=parseInt(x.cost); break;}
+                case(new Date(new Date().setDate(new Date().getDate()-6)).toLocaleDateString("fr-CA")):{data[0]+=parseInt(x.cost); break;}
+                default: {oldBalance+=parseInt(x.cost);break;}
+            }
+        }
+    });
+
+    data[0]+=oldBalance;
+    for(let i=1;i<data.length;i++){
+        data[i]+=data[i-1];
+
+    }
+
+    createGraph(data,"chrtor","Overall balance");
 }
 
 function createGraph(data,elementName,title){

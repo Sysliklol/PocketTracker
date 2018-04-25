@@ -33,7 +33,7 @@
 <body ng-app="SignInApp">
 <div class="container autism">
     <div class="col-md-6" style="display:inline-block" ng-controller="signUp">
-        <div class="col-md-12 "><h1>Register</h1> </div>
+        <div class="col-md-12 "><h1>Pocket tracker</h1> </div>
         <div class="col-md-12 text_above_login">Register here or  <a href="signin">Login</a></div>
         <div class="col-md-12 ">
             <c:if test="${not empty msg}">
