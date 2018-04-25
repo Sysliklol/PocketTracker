@@ -27,7 +27,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.0/chartist.min.css">
 <link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/home.css" />">
-<link type="text/css" rel="stylesheet" href="<c:url value="/resources/css/circle.css" />">
 <link rel="stylesheet" href="<c:url value="/resources/FA/css/font-awesome.min.css" />">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">

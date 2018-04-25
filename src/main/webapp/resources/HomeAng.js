@@ -139,9 +139,9 @@ HomeApp.controller('map',($scope,$rootScope,$http)=> {
         }
     });
 
-HomeApp.controller('stats',($scope,$rootScope,$http)=>{
+HomeApp.controller('stats',($scope,$rootScope,$http,$location)=>{
     angular.element(document).ready(() => {
-
+            if(!purchases)  $location.path( "/" );
             $scope.purchcount = 0;
             $scope.inccount = 0;
             $scope.purchases = purchases;
@@ -354,10 +354,10 @@ HomeApp.controller('userPurchase', ($scope, $http,$rootScope)=> {
 });
 
 HomeApp.controller('allPurchase', ($scope, $location, $http) => {
-    if(purchases!=null){
+    if(!purchases) $location.path( "/" );
     purchases.sort(function (a,b) {
         return b.createdAt - a.createdAt;
-    })}
+    })
         $scope.purchases = purchases;
     $scope.sortBy = function(){
         $scope.purchases = purchases;
