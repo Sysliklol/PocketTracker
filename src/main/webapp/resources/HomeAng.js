@@ -40,10 +40,12 @@ HomeApp.controller('map',($scope,$rootScope,$http)=> {
         var map;
         var marker;
         if (navigator.geolocation) {
+            showPositionDefault();
             navigator.geolocation.getCurrentPosition(showPosition);
         }
 
         function showPosition(position) {
+            console.log(position);
             var myLatLng = {lat: position.coords.latitude, lng: position.coords.longitude};
             var mapProp = {
                 center: myLatLng,
@@ -60,6 +62,22 @@ HomeApp.controller('map',($scope,$rootScope,$http)=> {
             });
         }
 
+        function showPositionDefault() {
+            var myLatLng = {lat: 50.4019514, lng: 30.3926095};
+            var mapProp = {
+                center: myLatLng,
+                zoom: 10,
+            };
+            $scope.map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+            $scope.marker = new google.maps.Marker({
+                position: myLatLng,
+                map:  $scope.map
+            });
+
+            $scope.map.addListener('click', function (e) {
+                placeMarkerAndPanTo(e.latLng, map);
+            });
+        }
         function placeMarkerAndPanTo(latLng, map) {
             if ( $scope.marker &&  $scope.marker.setMap) {
                 $scope.marker.setMap(null);
