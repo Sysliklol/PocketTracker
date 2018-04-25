@@ -112,6 +112,7 @@ HomeApp.controller('map',($scope,$rootScope,$http)=> {
                     showConfirmButton: false,
                     timer: 2000
                 })
+
             })
         };
 
@@ -158,6 +159,7 @@ HomeApp.controller('map',($scope,$rootScope,$http)=> {
     });
 
 HomeApp.controller('stats',($scope,$rootScope,$http,$location)=>{
+    $('#popup_place').hide();
     angular.element(document).ready(() => {
             if(!purchases)  $location.path( "/" );
             $scope.purchcount = 0;
@@ -305,7 +307,7 @@ HomeApp.controller('stats',($scope,$rootScope,$http,$location)=>{
 });
 
 HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
-
+    $('#popup_place').hide();
     angular.element(document).ready(function () {
         console.log($rootScope.options);
         if(!$rootScope.options){
@@ -330,6 +332,11 @@ HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
             "placeId": $scope.place_purchase.id
 
         }).then((response,err)=>{
+            $scope.title_purchase=""
+            $scope.ammount_purchase=""
+            $scope.description_purchase=""
+            $scope.place_purchase=""
+            $scope.type_purchase=""
             if(!err){
                 swal({
                     position: 'top-end',
@@ -369,6 +376,7 @@ HomeApp.controller('userPurchase', ($scope, $http,$rootScope)=> {
 });
 
 HomeApp.controller('allPurchase', ($scope, $location, $http) => {
+    $('#popup_place').hide();
     if(!purchases) $location.path( "/" );
     purchases.sort(function (a,b) {
         return b.createdAt - a.createdAt;
@@ -440,7 +448,7 @@ HomeApp.controller('singlePurchase',($scope, $http,$rootScope,$location) =>{
         });
     };
 
-    $scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg";
+
 
     $scope.getSinglePurchase = function(){
         $scope.purchase = currPurchase;
@@ -472,7 +480,7 @@ HomeApp.controller('singlePurchase',($scope, $http,$rootScope,$location) =>{
             case("Food"):{$scope.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
             case("Clothes"):{$scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
             case("Electronics"):{$scope.img="https://www.partners-in-harvest.org/wp-content/uploads/2017/12/p1500669900108.jpg";break;}
-            default:{$scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
+            default:{$scope.img="https://si.wsj.net/public/resources/images/ON-CF689_dollah_M_20170811152733.jpg"; break;}
         }
 
     };
@@ -507,7 +515,10 @@ HomeApp.controller('addIncome',($scope,$http,$rootScope) =>{
             "cost": parseInt($scope.ammount_income),
             "placeId": $scope.place_income.id
         }).then(function(response,err) {
-
+            $scope.title_income=""
+            $scope.type_income=""
+            $scope.ammount_income=""
+            $scope.place_income=""
             if (!err) {
                 swal({
                     position: 'top-end',
@@ -538,7 +549,7 @@ function getPurchase($http){
                 case("Food"):{x.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
                 case("Clothes"):{x.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
                 case("Electronics"):{x.img="https://www.partners-in-harvest.org/wp-content/uploads/2017/12/p1500669900108.jpg";break;}
-                default:{x.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
+                default:{x.img="https://si.wsj.net/public/resources/images/ON-CF689_dollah_M_20170811152733.jpg"; break;}
             }
         });
         getDates();
@@ -563,7 +574,7 @@ function getDates(){
         }}
     });
 
-   createGraph(data,"myChart","Money spent");
+   createGraph(data,"myChart","Money balance");
 }
 
 function getCountPurch(){
