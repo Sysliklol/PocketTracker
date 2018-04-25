@@ -9,18 +9,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
 <html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="<c:url value="/resources/piechart.js"/>"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 <script src="<c:url value="/resources/HomeAng.js"/>"></script>
 <script src="<c:url value="/resources/sweetalert2.all.min.js"/>"></script>
+
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons" type="text/css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chartist/0.11.0/chartist.min.css">
@@ -60,12 +62,10 @@
     <input type="text" class="form-control col-md-3"  id="lat" ng-model="lat" style="display:none" disabled >
     <input type="text" class="form-control col-md-3" id="lng" ng-model="lng" style="display:none" disabled >
     <div class="col-md-12" id="googleMap" style="width:100%;height:400px;"></div>
-
-
-        <button type="button"  class="btn btn-primary mrg"  data-toggle="modal" data-target="#myModal"  ng-click="addplace()">
+        <button type="button"  class="btn btn-primary mrg"    ng-click="addplace()">
             Add
         </button>
-        <button type="button"  class="btn btn-primary mrg"  data-toggle="modal" data-target="#myModal"  ng-click="delete_place()">
+        <button type="button"  class="btn btn-primary mrg"    ng-click="delete_place()">
             Delete
         </button>
     </div>

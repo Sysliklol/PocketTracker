@@ -4,7 +4,7 @@
     <div id="col-menu" style="display:none;" class="col-menu no-padding" ng-controller="userPurchase">
         <div class="menu">
             <div class="header">
-                Привіт, {{username}} !
+                Доброго дня !
             </div>
             <div class="items" ng-controller="userPurchase">
                 <ul class="nav">
@@ -27,7 +27,13 @@
                         </a>
                     </li>
                     <li>
-                        <a>
+                        <a href="#!infoHome">
+                            <i class="material-icons">lock</i>
+                            <p>Statistics</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="signout">
                             <i class="material-icons">lock</i>
                             <p>Вихід</p>
                         </a>
@@ -47,7 +53,9 @@
                         <canvas class="chart green" id="myChart"></canvas>
                         <div class="sub">
                             <div class="head">
+
                                 Щоденний баланс
+
                             </div>
                             <div class="description">
                                 <i class="material-icons">access_time</i>
@@ -91,16 +99,7 @@
                         <div class="head">
                             Додати витрату
                         </div>
-                        <div class="modal fade" id="myModal">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">{{message}}</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                         <form>
                             <div class="row" style="padding: 15px 0px;">
                                 <div class="col-md-6">
@@ -157,17 +156,7 @@
                         <div class="head">
                             Додати прибуток
                         </div>
-                        <div class="modal fade" id="myModalIncome">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <!-- Modal Header -->
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">{{message}}</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                         <form>
                             <div class="row" style="padding: 15px 0px;">
                                 <div class="col-md-6">

@@ -1,5 +1,5 @@
 let HomeApp =  angular.module('HomeApp', ["ngRoute"]);
-let labels = [new Date(new Date().setDate(new Date().getDate()-6)).toLocaleDateString("fr-CA"),new Date(new Date().setDate(new Date().getDate()-5)).toLocaleDateString("fr-CA"),new Date(new Date().setDate(new Date().getDate()-4)).toLocaleDateString("fr-CA"),new Date(new Date().setDate(new Date().getDate()-3)).toLocaleDateString("fr-CA"),new Date(new Date().setDate(new Date().getDate()-2)).toLocaleDateString("fr-CA"),new Date(new Date().setDate(new Date().getDate()-1)).toLocaleDateString("fr-CA"),new Date(new Date().setDate(new Date().getDate())).toLocaleDateString("fr-CA")]
+let labels = [new Date(new Date().setDate(new Date().getDate()-6)).toLocaleDateString("fr-CA"),new Date(new Date().setDate(new Date().getDate()-5)).toLocaleDateString("fr-CA"),new Date(new Date().setDate(new Date().getDate()-4)).toLocaleDateString("fr-CA"),new Date(new Date().setDate(new Date().getDate()-3)).toLocaleDateString("fr-CA"),new Date(new Date().setDate(new Date().getDate()-2)).toLocaleDateString("fr-CA"),new Date(new Date().setDate(new Date().getDate()-1)).toLocaleDateString("fr-CA"),new Date(new Date().setDate(new Date().getDate())).toLocaleDateString("fr-CA")];
 let purchases = null;
 let currPurchase = null;
 
@@ -14,33 +14,38 @@ HomeApp.config(($routeProvider) => {
         .when("/singlePurchase",{
             templateUrl : "resources/Home/SingleOperationInfo.htm"
         })
+        .when("/infoHome",{
+            templateUrl : "resources/Home/InfoHome.htm"
+        })
 });
 var options;
 
 function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
-};
+}
 HomeApp.controller('map',($scope,$rootScope,$http)=> {
 
     $scope.hide_map = function () {
         $('#popup_place').hide();
-    }
+    };
     angular.element(document).ready(function () {
         setTimeout(() => {
             $scope.options = $rootScope.options;
 
         }, 10000)
 
-/**/})
+/**/});
 
 
-        var map
+        var map;
         var marker;
         if (navigator.geolocation) {
+            showPositionDefault();
             navigator.geolocation.getCurrentPosition(showPosition);
         }
 
         function showPosition(position) {
+            console.log(position);
             var myLatLng = {lat: position.coords.latitude, lng: position.coords.longitude};
             var mapProp = {
                 center: myLatLng,
@@ -57,6 +62,22 @@ HomeApp.controller('map',($scope,$rootScope,$http)=> {
             });
         }
 
+        function showPositionDefault() {
+            var myLatLng = {lat: 50.4019514, lng: 30.3926095};
+            var mapProp = {
+                center: myLatLng,
+                zoom: 10,
+            };
+            $scope.map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+            $scope.marker = new google.maps.Marker({
+                position: myLatLng,
+                map:  $scope.map
+            });
+
+            $scope.map.addListener('click', function (e) {
+                placeMarkerAndPanTo(e.latLng, map);
+            });
+        }
         function placeMarkerAndPanTo(latLng, map) {
             if ( $scope.marker &&  $scope.marker.setMap) {
                 $scope.marker.setMap(null);
@@ -91,13 +112,14 @@ HomeApp.controller('map',($scope,$rootScope,$http)=> {
                     showConfirmButton: false,
                     timer: 2000
                 })
+
             })
-        }
+        };
 
         $scope.update = function(){
-            let lat = $scope.place_delete.latitude
-            let lng =   $scope.place_delete.longitude
-            let latLng = {lat: lat,lng: lng}
+            let lat = $scope.place_delete.latitude;
+            let lng =   $scope.place_delete.longitude;
+            let latLng = {lat: lat,lng: lng};
             $scope.map.panTo(latLng);
             console.log($scope.place_delete);
             if ( $scope.marker &&  $scope.marker.setMap) {
@@ -107,7 +129,7 @@ HomeApp.controller('map',($scope,$rootScope,$http)=> {
                 position: latLng,
                 map:  $scope.map
             });
-        }
+        };
 
         $scope.delete_place=  function(){
             $http.post('/places/delete',{
@@ -134,12 +156,160 @@ HomeApp.controller('map',($scope,$rootScope,$http)=> {
                 }
             })
         }
+    });
+
+HomeApp.controller('stats',($scope,$rootScope,$http,$location)=>{
+    $('#popup_place').hide();
+    angular.element(document).ready(() => {
+            if(!purchases)  $location.path( "/" );
+            $scope.purchcount = 0;
+            $scope.inccount = 0;
+            $scope.purchases = purchases;
+
+            $scope.types= {};
+            $scope.types_chart = [];
+
+            $scope.types_sum = {};
+            $scope.types_chart_sum = [];
+
+            $scope.years = {};
+            $scope.years_chart=[];
+
+            $scope.place = {};
+            $scope.places_chart =[];
+
+            $scope.place_sum = {};
+            $scope.place_sum_chart = [];
+
+            $scope.date = new Date().toLocaleDateString("fr-CA").substring(0,4);
+            $scope.purchases.forEach(elem => {
+
+
+                let transaction_date = new Date(elem.createdAt).toLocaleDateString("fr-CA").substring(0,4);
+
+                $rootScope.options.find(item=>{
+                    if(item.id==elem.placeId){
+
+                        if(!$scope.place[item.title]) {
+                            $scope.place[item.title]=1;
+
+                            if(elem.cost>0) $scope.place_sum[item.title]=parseInt(elem.cost)
+                            else $scope.place_sum[item.title]=parseInt(elem.cost)*(-1)
+
+                        }
+
+                        else {
+                            $scope.place[item.title]++
+                            if(elem.cost>0) $scope.place_sum[item.title]+=parseInt(elem.cost)
+                            else $scope.place_sum[item.title]+=parseInt(elem.cost)*(-1)
+                        }
+
+
+                    }
+                })
+
+                if(!$scope.types[elem.image]){
+
+                    $scope.types[elem.image]=1;
+
+                    if(elem.cost>0) $scope.types_sum[elem.image]=parseInt(elem.cost);
+                    else  $scope.types_sum[elem.image]=parseInt(elem.cost)*(-1);
+                }
+                else {
+                    $scope.types[elem.image]++;
+
+                    if(elem.cost>0) $scope.types_sum[elem.image]+=parseInt(elem.cost);
+                    else $scope.types_sum[elem.image]+=parseInt(elem.cost*(-1));
+                }
+
+                if (elem.cost > 0) {
+                    $scope.inccount += parseInt(elem.cost);
+                }
+                else {
+                    $scope.purchcount += (parseInt(elem.cost) * (-1));
+                }
+
+                if(!$scope.years[transaction_date]){
+                    if(elem.cost>0) $scope.years[transaction_date]=parseInt(elem.cost);
+                    else  $scope.years[transaction_date]=parseInt(elem.cost)*(-1);
+                }
+                else{
+                    if(elem.cost>0) $scope.years[transaction_date]+=parseInt(elem.cost);
+                    else $scope.years[transaction_date]+=parseInt(elem.cost*(-1));
+                }
+
+            });
+
+            $.each($scope.place_sum,(key,value)=>{
+                let color = getRandomColor();
+                $('#places_sum_stats').append('<div class="col-md-4"><span style="background:'+color+';width:20px;margin-top:5px;height:16px;display:inline-block;padding-top:3px"></span> '+key+' </div>');
+                $scope.place_sum_chart.push({
+                    title: key,
+                    value: value,
+                    color: color
+                })
+            })
+
+            $.each($scope.place,(key,value)=>{
+                let color = getRandomColor();
+                $('#places_stats').append('<div class="col-md-4"><span style="background:'+color+';width:20px;margin-top:5px;height:16px;display:inline-block;padding-top:3px"></span> '+key+' </div>');
+                $scope.places_chart.push({
+                    title: key,
+                    value: value,
+                    color: color
+                })
+            })
+
+            $.each( $scope.types_sum, (key, value ) => {
+                let color = getRandomColor();
+                $('#types_sum_stats').append('<div class="col-md-4"><span style="background:'+color+';width:20px;margin-top:5px;height:16px;display:inline-block;padding-top:3px"></span> '+key+' </div>');
+                $scope.types_chart_sum.push({
+                    title: key,
+                    value: value,
+                    color: color
+                })
+            });
+
+            $.each( $scope.types, ( key, value ) => {
+                let color = getRandomColor();
+                $('#types_stats').append('<div class="col-md-4"><span style="background:'+color+';width:20px;margin-top:5px;height:16px;display:inline-block;padding-top:3px"></span> '+key+' </div>');
+                $scope.types_chart.push({
+                    title: key,
+                    value: value,
+                    color: color
+                })
+            });
+
+            $.each( $scope.years, ( key, value ) => {
+                let color = getRandomColor();
+                $('#dates_stats').append('<div class="col-md-4"><span style="background:'+color+';width:20px;margin-top:5px;height:16px;display:inline-block;padding-top:3px"></span> '+key+' </div>');
+                $scope.years_chart.push({
+                    title: key,
+                    value: value,
+                    color: color
+                })
+            });
+
+            $(function(){
+                $("#sum_stats").text(($scope.purchcount+$scope.inccount)+" grn");
+                $("#pieChart").drawPieChart([
+                    { title: "Purchases",    value:  $scope.purchcount,   color: "#fe4400" },
+                    { title: "Incomes",          value:  $scope.inccount,   color: "#018ab6" }
+                ]);
+                $("#pieChartType").drawPieChart($scope.types_chart);
+                $("#pieChartTypeSum").drawPieChart($scope.types_chart_sum);
+                $("#pieChartDate").drawPieChart($scope.years_chart);
+                $("#pieChartPlaces").drawPieChart($scope.places_chart);
+                $("#pieChartPlaceSum").drawPieChart($scope.place_sum_chart);
+         });
     })
 
-HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
+});
 
+HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
+    $('#popup_place').hide();
     angular.element(document).ready(function () {
-        console.log($rootScope.options)
+        console.log($rootScope.options);
         if(!$rootScope.options){
             $http.get('/places/all').then(response=>{
                 options=response.data;
@@ -154,21 +324,7 @@ HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
     });
     $scope.message = "added ur purchase! :)";
     $scope.addpurchase = function () {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        }
 
-    }
-    $scope.getCharts = function (){
-        if(purchases) {
-            getDates();
-            getCountPurch();
-            getOverallBalance();
-        }
-    }
-    function showPosition(position) {
-        $scope.latitude = position.coords.latitude;
-        $scope.longtitude = position.coords.longitude;
         $http.post("/transactions/create", {
             "title": $scope.title_purchase,
             "cost": -parseInt($scope.ammount_purchase),
@@ -177,18 +333,35 @@ HomeApp.controller('addPurchase',($scope, $http,$rootScope, $location) => {
             "placeId": $scope.place_purchase.id
 
         }).then((response,err)=>{
+            $scope.title_purchase=""
+            $scope.ammount_purchase=""
+            $scope.description_purchase=""
+            $scope.place_purchase=""
+            $scope.type_purchase=""
             if(!err){
-            swal({
-                position: 'top-end',
-                type: 'success',
-                title: 'Added',
-                showConfirmButton: false,
-                timer: 2000
-            })
-            getPurchase($http);
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Added',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+                getPurchase($http);
             }
         });
-    }
+
+    };
+        $scope.getCharts = function (){
+            if(purchases) {
+                getDates();
+                getCountPurch();
+                getOverallBalance();
+            }
+        }
+
+
+
+
 });
 
 HomeApp.controller('userPurchase', ($scope, $http,$rootScope)=> {
@@ -199,15 +372,17 @@ HomeApp.controller('userPurchase', ($scope, $http,$rootScope)=> {
     }
     $scope.map = function(){
         $('#popup_place').show();
+
     }
 
 });
 
 HomeApp.controller('allPurchase', ($scope, $location, $http) => {
-    if(purchases!=null){
+    $('#popup_place').hide();
+    if(!purchases) $location.path( "/" );
     purchases.sort(function (a,b) {
         return b.createdAt - a.createdAt;
-    })}
+    })
         $scope.purchases = purchases;
     $scope.sortBy = function(){
         $scope.purchases = purchases;
@@ -239,7 +414,7 @@ HomeApp.controller('allPurchase', ($scope, $location, $http) => {
                     return b.createdAt - a.createdAt;
                 });
             }
-    }
+    };
 
     $scope.getPurchasesUser = function(id){
         $location.path( "/singlePurchase" );
@@ -273,9 +448,9 @@ HomeApp.controller('singlePurchase',($scope, $http,$rootScope,$location) =>{
                 });
             }
         });
-    }
+    };
 
-    $scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg";
+
 
     $scope.getSinglePurchase = function(){
         $scope.purchase = currPurchase;
@@ -284,7 +459,7 @@ HomeApp.controller('singlePurchase',($scope, $http,$rootScope,$location) =>{
 
         }
         else{
-            $scope.right_word="Spending"
+            $scope.right_word="Spending";
             $scope.purchase.cost =  $scope.purchase.cost*=(-1);
         }
         let myLatLng;
@@ -307,10 +482,10 @@ HomeApp.controller('singlePurchase',($scope, $http,$rootScope,$location) =>{
             case("Food"):{$scope.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
             case("Clothes"):{$scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
             case("Electronics"):{$scope.img="https://www.partners-in-harvest.org/wp-content/uploads/2017/12/p1500669900108.jpg";break;}
-            default:{$scope.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
+            default:{$scope.img="https://si.wsj.net/public/resources/images/ON-CF689_dollah_M_20170811152733.jpg"; break;}
         }
 
-    }
+    };
 
         $scope.delete= function(){
         $http.post('/transactions/delete',{
@@ -342,7 +517,10 @@ HomeApp.controller('addIncome',($scope,$http,$rootScope) =>{
             "cost": parseInt($scope.ammount_income),
             "placeId": $scope.place_income.id
         }).then(function(response,err) {
-
+            $scope.title_income=""
+            $scope.type_income=""
+            $scope.ammount_income=""
+            $scope.place_income=""
             if (!err) {
                 swal({
                     position: 'top-end',
@@ -350,7 +528,7 @@ HomeApp.controller('addIncome',($scope,$http,$rootScope) =>{
                     title: 'Added',
                     showConfirmButton: false,
                     timer: 2000
-                })
+                });
                 getPurchase($http);
             }
         });
@@ -373,7 +551,7 @@ function getPurchase($http){
                 case("Food"):{x.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
                 case("Clothes"):{x.img="https://a.suitsupplycdn.com/image/upload/v1519740025/suitsupply/homepage/ss18/week09/v2/newarrivals_858.jpg"; break;}
                 case("Electronics"):{x.img="https://www.partners-in-harvest.org/wp-content/uploads/2017/12/p1500669900108.jpg";break;}
-                default:{x.img="https://cdn2.hubspot.net/hubfs/322787/Mychefcom/images/BLOG/Header-Blog/photo-culinaire-pexels.jpg"; break;}
+                default:{x.img="https://si.wsj.net/public/resources/images/ON-CF689_dollah_M_20170811152733.jpg"; break;}
             }
         });
         getDates();
@@ -399,7 +577,9 @@ function getDates(){
         }}
     });
 
+
    createGraph(data,"myChart","Everyday balance");
+
 }
 
 function getCountPurch(){
@@ -486,3 +666,21 @@ function show(name) {
     }
 }
 
+
+
+
+/*
+
+
+*/
+
+
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
