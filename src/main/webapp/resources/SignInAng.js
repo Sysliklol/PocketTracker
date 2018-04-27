@@ -34,9 +34,9 @@ signInApp.controller('signUp', function($scope, $http) {
             lastName: $scope.sName,
             email:  $scope.email,
             password: $scope.pass
-        }).then(function(response) {
-            console.log(response.message);
-            if(response.Status == 200) {
+        }).then((response) =>{
+            console.log(response.data);
+            if(response.data.status == "Success") {
                 alert("Check your e-mail for verification");
             } else {
                 alert("Bad request");
